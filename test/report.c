@@ -4,20 +4,8 @@
 #define DARK_GREEN "\e[1;38;5;17m\e[48;5;36m\e[4m"
 #define LIGHT_GREEN "\e[1;38;5;17m\e[48;5;79m\e[4m"
 #define RESET "\e[0m"
-
-const char* getfield(char* line, int num)
-{
-    const char* tok;
-    for (tok = strtok(line, ",");
-            tok && *tok;
-            tok = strtok(NULL, ",\n"))
-    {
-        if (!--num)
-            return tok;
-    }
-    return NULL;
-}
-
+#define MAX_LINE_LENGTH 50
+typedef int t_bool;
 typedef enum e_stack_type
 {
     ARRAY = 0,
@@ -36,12 +24,11 @@ typedef enum e_test
     NUM_TESTS = 7,
 }   t_test;
 
-typedef struct s_run_time
+typedef struct s_fields
 {
-    t_test test;
-    double array;
-    double linked;
-} t_run_time;
+    char * test_name;
+    double run_time;
+} t_fields;
 
 static void print_header()
 {
@@ -59,9 +46,9 @@ static void print_line(const char * test_name, double array_run_time, double lin
     printf("%s%22.2f \e[0m\n", DARK_GREEN, linked_run_time / array_run_time);
 }
 
-t_test get_test_type(char *name)
+static const char **get_test_types()
 {
-    const char *test_type[] = {
+    static const char *test_types[] = {
                                     "SWAP",
                                     "REVERSE ROTATE",
                                     "ROTATE",
@@ -71,54 +58,59 @@ t_test get_test_type(char *name)
                                     "VISIT",
                                     "NUM_TESTS",
                                 };
+    return (test_types);
+}
+
+static t_fields get_fields(char* line)
+{
+    char *test_name = strtok(line, ",");
+    char *test_name_cpy = strdup(test_name);
+    char *run_time = strtok(NULL, ",\n");
+
+    t_fields fields = {
+        .test_name = test_name_cpy,
+        .run_time = atof(run_time),
+    };
+
+    return (fields);
+}
+
+t_test get_test_type(char *name)
+{
     int i = 0;
     while (i < NUM_TESTS)
     {
-        if (strcmp(name, test_type[i]) == 0)
+        if (strcmp(name, get_test_types()[i]) == 0)
             return (i);
         ++i;
     }
     return (0);
 }
 
+static t_bool is_same_test_field(t_fields array, t_fields linked)
+{
+    return (strcmp(array.test_name, linked.test_name) == 0);
+}
+
+static void cleanup(const t_fields *array, const t_fields *linked)
+{
+    free(array->test_name);
+    free(linked->test_name);
+}
 
 void generate_report(FILE *array_fd, FILE *linked_fd)
 {
-    const char *test_type[] = {
-                                    "SWAP",
-                                    "REVERSE ROTATE",
-                                    "ROTATE",
-                                    "SIZE",
-                                    "PUSH",
-                                    "POPULATE",
-                                    "VISIT",
-                                    "NUM_TESTS",
-                                };
-
     print_header();
-    t_run_time run_time = {.array = 0, .linked = 0, .test = 0};
+    char line_array[MAX_LINE_LENGTH];
+    char line_linked[MAX_LINE_LENGTH];
 
-
-    char line_array[50];
-    char line_linked[50];
-
-    while (fgets(line_array, 50, array_fd) && fgets(line_linked, 50, linked_fd))
+    while (fgets(line_array, MAX_LINE_LENGTH, array_fd) && fgets(line_linked, MAX_LINE_LENGTH, linked_fd))
     {
-        char* arr_test = strdup(line_array);
-        char* linked_test = strdup(line_linked);
-        char* arr_value = strdup(line_array);
-        char* linked_value = strdup(line_linked);
-        if (strcmp(getfield(arr_test, 1), getfield(linked_test, 1)) == 0)
-        {       
-            run_time.test = get_test_type(arr_test);
-            run_time.array = atof(getfield(arr_value, 2));
-            run_time.linked = atof(getfield(linked_value, 2));
-        }
-        free(arr_test);
-        free(linked_test);
-        free(arr_value);
-        free(linked_value);
-        print_line(test_type[run_time.test], run_time.array, run_time.linked);
+        const t_fields array = get_fields(line_array);
+        const t_fields linked = get_fields(line_linked);
+        if (is_same_test_field(array, linked))
+            print_line(array.test_name, array.run_time, linked.run_time);
+        cleanup(&array, &linked);
     }
     printf("\n");
 }
