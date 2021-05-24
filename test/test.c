@@ -15,75 +15,85 @@
 #define TIMES 100000.0
 #define NUM_ELEMENTS 2000
 
-static void print_run_time(float run_time, double times)
+static void print_run_time(double run_time, double times)
 {
     printf("%saverage time: %f ms ", BYELLOW,  run_time / times);
 }
 
-CTEST(push_test, 100000_time)
+CTEST(push, test)
 {
     FILE * fd = fopen(FILE_NAME, "a");
     const char *test_name = "PUSH";
-    float run_time = run_push_test(TIMES);
+    double run_time = run_push_test(TIMES);
     print_run_time(run_time, TIMES);
     fprintf(fd, "%s,%f\n", test_name, run_time / TIMES);
     fclose(fd);
 }
 
-CTEST(populate_test, many_times)
+CTEST(populate, test)
 {
     FILE * fd = fopen(FILE_NAME, "a");
     const char *test_name = "POPULATE";
-    float run_time = run_populate_test(NUM_ELEMENTS, TIMES);
+    double run_time = run_populate_test(NUM_ELEMENTS, TIMES);
     print_run_time(run_time, TIMES);
     fprintf(fd, "%s,%f\n", test_name, run_time / TIMES);
 }
 
-CTEST(size_test, many_times)
+CTEST(size, test)
 {
     FILE * fd = fopen(FILE_NAME, "a");
     const char *test_name = "SIZE";
-    float run_time = run_size_test(NUM_ELEMENTS, TIMES);
+    double run_time = run_size_test(NUM_ELEMENTS, TIMES);
     print_run_time(run_time, TIMES);
     fprintf(fd, "%s,%f\n", test_name, run_time / TIMES);
     fclose(fd);
 }
 
-CTEST(visit_test, 100000_time)
+CTEST(visit, test)
 {
     FILE * fd = fopen(FILE_NAME, "a");
     const char *test_name = "VISIT";
-    float run_time = run_visit_test(NUM_ELEMENTS, TIMES);
+    double run_time = run_visit_test(NUM_ELEMENTS, TIMES);
     print_run_time(run_time, TIMES);
     fprintf(fd, "%s,%f\n", test_name, run_time / TIMES);\
 }
 
-CTEST(rotate_test, many_times)
+CTEST(rotate, test)
 {
     FILE * fd = fopen(FILE_NAME, "a");
     const char *test_name = "ROTATE";
-    float run_time = run_test(NUM_ELEMENTS, TIMES, rotate);
+    double run_time = run_test(NUM_ELEMENTS, TIMES, rotate);
     print_run_time(run_time, TIMES);
     fprintf(fd, "%s,%f\n", test_name, run_time / TIMES);
     fclose(fd);
 }
 
-CTEST(reverse_rotate_test, many_times)
+CTEST(reverse_rotate, test)
 {
     FILE * fd = fopen(FILE_NAME, "a");
     const char *test_name = "REVERSE ROTATE";
-    float run_time = run_test(NUM_ELEMENTS, TIMES, reverse_rotate);
+    double run_time = run_test(NUM_ELEMENTS, TIMES, reverse_rotate);
     print_run_time(run_time, TIMES);
     fprintf(fd, "%s,%f\n", test_name, run_time / TIMES);
     fclose(fd);
 }
 
-CTEST(swap_test, many_times)
+CTEST(swap, test)
 {
     FILE * fd = fopen(FILE_NAME, "a");
     const char *test_name = "SWAP";
-    float run_time = run_test(NUM_ELEMENTS, TIMES, swap);
+    double run_time = run_test(NUM_ELEMENTS, TIMES, swap);
     print_run_time(run_time, TIMES);
     fprintf(fd, "%s,%f\n", test_name, run_time / TIMES);
+    fclose(fd);
+}
+
+CTEST(random_movements, test)
+{
+    FILE * fd = fopen(FILE_NAME, "a");
+    const char *test_name = "RANDOM";
+    double run_time = run_random_test(NUM_ELEMENTS, TIMES);
+    print_run_time(run_time, TIMES);
+    fprintf(fd, "%s,%f\n", test_name, run_time / (TIMES));
     fclose(fd);
 }

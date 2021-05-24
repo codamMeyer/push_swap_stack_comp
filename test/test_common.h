@@ -1,11 +1,14 @@
 #ifndef TEST_COMMON_H
-#define TEST_COMMON_H
-#include <time.h>
+# define TEST_COMMON_H
+# include <time.h>
 
-int plus_2(int element)
+typedef enum e_stack_functions
 {
-    return (element + 2);
-}
+    PUSH = 0,
+    SWAP = 1,
+    ROTATE = 2,
+    REVERSE_ROTATE = 3
+} t_stack_functions;
 
 typedef struct s_time
 {
@@ -13,9 +16,7 @@ typedef struct s_time
    	clock_t stop;
 }	t_time;
 
-double timedifference_msec(t_time time)
-{
-    return (double)(time.stop - time.start) / CLOCKS_PER_SEC * 1000.0;
-}
+int plus_2(int element);
+double timedifference_msec(t_time time);
 
 #endif

@@ -21,7 +21,8 @@ typedef enum e_test
     PUSH = 4,
     POPULATE = 5,
     VISIT = 6,
-    NUM_TESTS = 7,
+    RANDOM = 7,
+    NUM_TESTS = 8,
 }   t_test;
 
 typedef struct s_fields
@@ -56,6 +57,7 @@ static const char **get_test_types()
                                     "PUSH",
                                     "POPULATE",
                                     "VISIT",
+                                    "RANDOM",
                                     "NUM_TESTS",
                                 };
     return (test_types);

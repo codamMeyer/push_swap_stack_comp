@@ -25,11 +25,11 @@ run: fclean test_linked_stack test_array_stack
 
 test_run_time_array: $(ARRAY_OBJS)
 	@rm -f array.txt
-	@$(CC) $(TEST_CFLAGS) $(INC_PATH) $(ARRAY_OBJS) test/main.c test/test.c -o $(ARRAY_TEST_NAME)
+	@$(CC) $(TEST_CFLAGS) $(INC_PATH) $(ARRAY_OBJS) test/main.c test/test.c test/test_run_time_array.c test/test_common.c -o $(ARRAY_TEST_NAME)
 
 test_run_time_linked: $(LINKED_LIST_OBJS)
 	@rm -f linked_list.txt
-	@$(CC) $(TEST_CFLAGS) $(INC_PATH) $(LINKED_LIST_OBJS) -D LINKED=1 test/main.c test/test.c -o $(LINKED_TEST_NAME)
+	@$(CC) $(TEST_CFLAGS) $(INC_PATH) $(LINKED_LIST_OBJS) -D LINKED=1 test/main.c test/test.c test/test_run_time_linked.c test/test_common.c -o $(LINKED_TEST_NAME)
 
 test_linked_stack: $(LINKED_LIST_OBJS)
 	@$(CC) $(TEST_CFLAGS) $(INC_PATH) $(LINKED_LIST_OBJS) test/main.c $(LINKED_TEST_FILES) -o $(LINKED_TEST_NAME)
